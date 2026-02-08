@@ -1,0 +1,12 @@
+{
+  "name": "MatchUp - Find Sports Games",
+  "short_name": "MatchUp",
+  "description": "Discover and join local sports games near you",
+  "start_url": "/discover",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "categories": ["sports", "social", "lifestyle"]
+}

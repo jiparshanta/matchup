@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Sport {
+  football
+  cricket
+  basketball
+  volleyball
+  badminton
+}
+
+enum SkillLevel {
+  beginner
+  intermediate
+  advanced
+  any
+}
+
+enum GameStatus {
+  upcoming
+  in_progress
+  completed
+  cancelled
+}
+
+enum RSVPStatus {
+  confirmed
+  waitlisted
+  cancelled
+}
+
+enum NotificationType {
+  game_reminder
+  game_update
+  rsvp_update
+  general
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String
+  phone           String?   // Optional - used for contact when joining games
+  avatar          String?
+  preferredSports Sport[]
+  passwordHash    String    // Required for email/password auth
+
+  // Role for admin functionality
+  role            UserRole  @default(user)
+
+  // Skill levels stored as JSON
+  skillLevels     Json      @default("{}")
+
+  // Push notification token
+  expoPushToken   String?
+
+  // Refresh token for JWT
+  refreshToken    String?
+
+  // Email verification
+  isVerified      Boolean   @default(false)
+
+  // Ban/moderation fields
+  isBanned        Boolean   @default(false)
+  bannedAt        DateTime?
+  bannedReason    String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  hostedGames     Game[]    @relation("HostedGames")
+  rsvps           RSVP[]
+  notifications   Notification[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Venue {
+  id            String   @id @default(cuid())
+  name          String
+  address       String
+  latitude      Float
+  longitude     Float
+  sports        Sport[]
+  pricePerHour  Int?     // in NPR
+  images        String[]
+  amenities     String[]
+  isPartner     Boolean  @default(false)
+  contactPhone  String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  games         Game[]
+
+  @@index([latitude, longitude])
+}
+
+model Game {
+  id             String     @id @default(cuid())
+  title          String
+  sport          Sport
+
+  // Host relation
+  hostId         String
+  host           User       @relation("HostedGames", fields: [hostId], references: [id])
+
+  // Venue (optional - can be custom location)
+  venueId        String?
+  venue          Venue?     @relation(fields: [venueId], references: [id])
+  customLocation String?
+
+  // Location coordinates (for map display)
+  latitude       Float
+  longitude      Float
+
+  // Game details
+  dateTime       DateTime
+  duration       Int        // in minutes
+  maxPlayers     Int
+  minPlayers     Int        @default(2)
+  skillLevel     SkillLevel
+  description    String?
+  status         GameStatus @default(upcoming)
+  price          Int?       // in NPR (per player)
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  rsvps          RSVP[]
+
+  @@index([sport])
+  @@index([dateTime])
+  @@index([status])
+  @@index([latitude, longitude])
+}
+
+model RSVP {
+  id        String     @id @default(cuid())
+
+  gameId    String
+  game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status    RSVPStatus @default(confirmed)
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([gameId, userId])
+  @@index([gameId])
+  @@index([userId])
+  @@index([status])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title     String
+  body      String
+  type      NotificationType
+  data      Json?
+  read      Boolean          @default(false)
+
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+

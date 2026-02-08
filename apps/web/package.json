@@ -1,0 +1,48 @@
+{
+  "name": "@matchup/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "prisma generate && next build",
+    "postinstall": "prisma generate",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:seed": "npx tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
+    "@matchup/shared": "*",
+    "@prisma/client": "^5.8.1",
+    "bcryptjs": "^2.4.3",
+    "@tanstack/react-query": "^5.17.9",
+    "clsx": "^2.1.0",
+    "date-fns": "^3.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "leaflet": "^1.9.4",
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.3",
+    "react-leaflet": "^4.2.1",
+    "socket.io-client": "^4.8.3",
+    "tailwind-merge": "^2.2.0",
+    "zod": "^3.22.4",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/leaflet": "^1.9.8",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.33",
+    "prisma": "^5.8.1",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

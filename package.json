@@ -1,0 +1,19 @@
+{
+  "name": "matchup",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cd apps/web && npm run dev",
+    "build": "cd apps/web && npm run build",
+    "start": "cd apps/web && npm run start",
+    "lint": "cd apps/web && npm run lint",
+    "db:push": "cd apps/web && npm run db:push",
+    "db:seed": "cd apps/web && npm run db:seed",
+    "db:studio": "cd apps/web && npx prisma studio",
+    "postinstall": "cd apps/web && npx prisma generate"
+  }
+}
